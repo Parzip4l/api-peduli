@@ -127,7 +127,7 @@ class dashboardController extends Controller
         // Kategori berdasarkan lokasi (lokasi laporan)
         $kategoriData = DB::table('reports')
                         ->join('locations', 'reports.location_id', '=', 'locations.id')
-                        ->select('locations.nama_lokasi', \DB::raw('COUNT(*) as total'))
+                        ->select('locations.nama_lokasi', DB::raw('COUNT(*) as total'))
                         ->groupBy('locations.nama_lokasi')
                         ->pluck('total', 'locations.nama_lokasi')
                         ->toArray();
