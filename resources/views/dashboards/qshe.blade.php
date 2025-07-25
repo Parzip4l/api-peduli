@@ -1,25 +1,25 @@
 <div class="row">
     <!-- Kartu Statistik -->
     <div class="col-md-3">
-        <div class="card card-body bg-primary text-white">
+        <div class="card card-body bg-white text-white">
             <h6>Total Laporan</h6>
             <h3>{{ $totalReports ?? 0 }}</h3>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-body bg-warning text-white">
+        <div class="card card-body bg-white text-white">
             <h6>Belum Ditinjau</h6>
             <h3>{{ $ditinjau ?? 0 }}</h3>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-body bg-success text-white">
+        <div class="card card-body bg-white text-white">
             <h6>Sudah Selesai</h6>
             <h3>{{ $followUpReports ?? 0 }}</h3>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card card-body bg-danger text-white">
+        <div class="card card-body bg-white text-white">
             <h6>Ditolak</h6>
             <h3>{{ $rejectedByQshe ?? 0 }}</h3>
         </div>
