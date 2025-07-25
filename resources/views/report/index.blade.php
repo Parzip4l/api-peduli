@@ -45,7 +45,7 @@
                             <label for="" class="mb-1">Search Data</label>
                             <input type="text" id="search-input" class="form-control" placeholder="Search by item name" value="{{ request()->get('search') }}">
                         </div>
-                        <div class="col-md-6 mt-2">
+                        <div class="col-md-6">
                             <label for="" class="mb-1">Filter Berdasarkan Status</label>
                             <form method="GET" class="mb-3">
                                 <select name="status" class="form-select" onchange="this.form.submit()">
