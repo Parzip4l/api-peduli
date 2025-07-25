@@ -53,7 +53,7 @@
                                     @php
                                         $role = App\Models\Setting\Role::where('id',$data->role_id)->first();
                                     @endphp
-                                    <a href="#!">{{$role->name ?? 'No Role'}}</a>
+                                    <a href="#!">{{$data->role ?? 'No Role'}}</a>
                                 </td>
                                 <td>
                                     <div class="d-flex gap-2">

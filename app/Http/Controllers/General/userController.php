@@ -54,8 +54,10 @@ class userController extends Controller
             // Membuat user baru dengan remember_token
             $user = User::create([
                 'name' => $request->input('name'),
+                'username' => $request->input('username'),
+                'phone' => '0',
                 'email' => $request->input('email'),
-                'role_id' => $request->input('role_id'),
+                'role' => $request->input('role'),
                 'password' => Hash::make($request->input('password')),
                 'remember_token' => Str::random(60), // Menghasilkan token acak untuk 'remember_token'
             ]);
