@@ -22,7 +22,7 @@ class HazardController extends Controller
         $hazard = Hazard::when($search, function ($query, $search) {
             return $query->where('name', 'like', '%' . $search . '%')
             ->orWhere('deskripsi', 'like', '%' . $search . '%');
-        })->paginate(20);
+        })->paginate(50);
 
         if ($request->ajax()) {
             return view('master.hazard.index', compact('hazard'))->render();
