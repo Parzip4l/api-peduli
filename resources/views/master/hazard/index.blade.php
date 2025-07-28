@@ -42,7 +42,6 @@
                                 <th class="ps-3">#</th>
                                 <th>Kategori</th>
                                 <th>Deskrpisi PHL</th>
-                                <th>Klasifikasi Point</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -55,7 +54,6 @@
                                 <td class="ps-3">{{$no++}}</td>
                                 <td>{{$data->name}}</td>
                                 <td>{{$data->deskripsi}}</td>
-                                <td>{{$data->klasifikasi_point}}</td>
                                 <td>
                                     <div class="d-flex gap-2">
                                         <a href="#" class="btn btn-soft-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ModalPotensiUpdate{{ $data->id }}">

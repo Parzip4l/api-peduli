@@ -169,8 +169,10 @@ class ReportController extends Controller
 
         $history = ReportsHistories::where('report_id', $id)->get();
         $followup = ReportFollowUp::where('report_id', $id)->first();
+        $divisi = Divisions::all();
 
-        return view('report.show', compact('data','history','followup'));
+
+        return view('report.show', compact('data','history','followup','divisi'));
     }
 
     public function reviewByQshe(Request $request, $hashid)
@@ -475,4 +477,46 @@ class ReportController extends Controller
 
        return response()->json($employees);
     }
+
+    public function destroy($hashid)
+    {
+        try {
+            $id = hashid_decode($hashid);
+            if (!$id) {
+                return redirect()->back()->with('error', 'Laporan tidak valid.');
+            }
+            $report = Reports::findOrFail($id);
+            
+            // Hapus foto jika ada
+            if ($report->foto && Storage::exists('public/laporan_foto/' . $report->foto)) {
+                Storage::delete('public/laporan_foto/' . $report->foto);
+            }
+
+            // Hapus histori terkait
+            ReportsHistories::where('report_id', $report->id)->delete();
+
+            // Hapus laporan
+            $report->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data laporan berhasil dihapus.'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Gagal menghapus laporan', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus data laporan: ' . $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+        }
+    }
+
 }

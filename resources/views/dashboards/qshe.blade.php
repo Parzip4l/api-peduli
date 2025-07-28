@@ -102,7 +102,7 @@
                 {
                     name: "Tindakan",
                     formatter: (_, row) =>
-                        gridjs.html(`<a href="/laporan" class="btn btn-sm btn-outline-danger">Lihat</a>`)
+                        gridjs.html(`<a href="/laporan/${row.cells[0].data}" class="btn btn-sm btn-outline-danger">Lihat</a>`)
                 }
             ],
             data: laporan2.map(item => [

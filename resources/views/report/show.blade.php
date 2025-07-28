@@ -125,6 +125,158 @@ $user = auth()->user();
                 </div>
                 
             </div>
+            @if ($user->role == 'qshe' && !$data->division_id && !$data->assigned_to)
+                <a href="#" class="btn btn-soft-danger btn-sm w-100 mb-2" data-bs-toggle="modal" data-bs-target="#modalQshe{{hashid_encode($data->id)}}">
+                    <iconify-icon icon="solar:user-check-line-duotone" class="align-middle fs-18 me-1"></iconify-icon> Review Laporan
+                </a>
+            @endif
+            @if ($user->is_pic == 1 && !in_array($data->status, ['follow_up_submitted', 'under_review_by_qshe', 'closed', 'follow_up_rejected']))
+                <a href="#" class="btn btn-soft-success btn-sm w-100 mb-2" data-bs-toggle="modal" data-bs-target="#modalPIC{{hashid_encode($data->id)}}">
+                    <iconify-icon icon="solar:user-check-line-duotone" class="align-middle fs-18 me-1"></iconify-icon> Review Laporan
+                </a>
+            @endif
+            @if(in_array($data->status, ['follow_up_submitted', 'follow_up_rejected']))
+                <a href="#" class="btn btn-soft-success btn-sm w-100 mb-2" data-bs-toggle="modal" data-bs-target="#submitProgress{{hashid_encode($data->id)}}">
+                    <iconify-icon icon="solar:user-check-line-duotone" class="align-middle fs-18 me-1"></iconify-icon> Update Progress 
+                </a>
+            @endif
+
+            <div class="modal fade" id="modalQshe{{hashid_encode($data->id)}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Review Laporan {{$data->nomor_laporan}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ route('laporan.review.qshe', hashid_encode($data->id)) }}" method="POST" id="qsheReviewForm{{ hashid_encode($data->id) }}">
+                                @csrf
+                                
+                                <div class="mb-2">
+                                    <label for="" class="form-label">Setuju / Tidak</label>
+                                    <select name="action" class="form-control action-select" data-target="{{ hashid_encode($data->id) }}" required>
+                                        <option value="">-- Pilih Aksi --</option>
+                                        <option value="approve">Setuju</option>
+                                        <option value="reject">Tidak Setuju</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label for="" class="form-label">Catatan</label>
+                                    <textarea name="catatan" class="form-control"></textarea>
+                                </div>
+
+                                <div class="div-approval-fields d-none" id="approvalFields{{ hashid_encode($data->id) }}">
+                                    <div class="mb-2">
+                                        <label for="" class="form-label">Divisi</label>
+                                        <select name="division_id" class="form-control">
+                                            <option value="">-- Pilih Divisi --</option>
+                                            @foreach ($divisi as $div)
+                                                <option value="{{ $div->id }}">{{ $div->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-3">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                    <button type="submit" class="btn btn-danger">Kirim Review</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal PIC -->
+            <div class="modal fade" id="modalPIC{{hashid_encode($data->id)}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Review Laporan {{$data->nomor_laporan}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ route('laporan.review.pic', hashid_encode($data->id)) }}" method="POST" id="qsheReviewForm{{ hashid_encode($data->id) }}">
+                                @csrf
+                                
+                                <div class="mb-2">
+                                    <label for="" class="form-label">Setuju / Tidak</label>
+                                    <select name="action" class="form-control action-select" data-target="{{ hashid_encode($data->id) }}" required>
+                                        <option value="">-- Pilih Aksi --</option>
+                                        <option value="approve">Setuju</option>
+                                        <option value="reject">Tidak Setuju</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label for="" class="form-label">Catatan</label>
+                                    <textarea name="catatan" class="form-control"></textarea>
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-3">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                    <button type="submit" class="btn btn-danger">Kirim Review</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Submit PIC -->
+            <div class="modal fade" id="submitProgress{{hashid_encode($data->id)}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Update Tindak Lanjut Laporan {{$data->nomor_laporan}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ route('laporan.submit.pic', hashid_encode($data->id)) }}" method="POST" id="submitProgress{{ hashid_encode($data->id) }}">
+                                @csrf
+                                <div class="col-md-12 mb-2">
+                                    <label for="foto" class="form-label">Ambil Foto</label>
+                                    <input 
+                                        type="file" 
+                                        class="form-control" 
+                                        name="foto" 
+                                        id="fotoInput" 
+                                        accept="image/*" 
+                                        capture="environment"
+                                        onchange="compressAndPreviewFoto(event)">
+                                    <input type="hidden" name="foto_base64" id="fotoBase64">
+                                </div>
+
+                                <div class="col-md-12 mb-2">
+                                    <img id="previewImage" src="#" alt="Preview Foto" style="display: none; max-width: 100%; height: auto;" class="rounded shadow-sm"/>
+                                </div>
+                                
+                                <div class="mb-2">
+                                    <label for="" class="form-label">Status</label>
+                                    <select name="action" class="form-control action-select" data-target="{{ hashid_encode($data->id) }}" required>
+                                        <option value="1">Selesai</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label for="" class="form-label">Catatan</label>
+                                    <textarea name="description" class="form-control"></textarea>
+                                </div>
+
+                                <div class="d-flex justify-content-between mt-3">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                    <button type="submit" class="btn btn-danger">Kirim Tindak Lanjut</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Modal PIC -->
             <div class="modal fade" id="modalPIC{{hashid_encode($data->id)}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -249,29 +401,9 @@ $user = auth()->user();
                 </div>
             </div>
         </div>
-        @if ($data->status !== 'under_review_by_qshe' && $data->status != 'closed')
-        <div class="col-xl-4 col-lg-4 mt-2">
-            <div class="card">
-                <div class="card-body">
-                    @if ($user->is_pic == 1 && $data->status != 'follow_up_submitted')
-                        <a href="#" class="btn btn-success btn-sm w-100" data-bs-toggle="modal" data-bs-target="#modalPIC{{hashid_encode($data->id)}}">
-                            <iconify-icon icon="solar:user-check-line-duotone" class="align-middle fs-18 me-1"></iconify-icon> Review Laporan
-                        </a>
-                    @endif
-                    @if($data->status == 'follow_up_submitted' || $data->status == 'follow_up_rejected')
-                        <a href="#" class="btn btn-success btn-sm w-100" data-bs-toggle="modal" data-bs-target="#submitProgress{{hashid_encode($data->id)}}">
-                            <iconify-icon icon="solar:user-check-line-duotone" class="align-middle fs-18 me-1"></iconify-icon> Update Progress 
-                        </a>
-                    @endif
-                </div>
-            </div>
-            <a href="{{ route('laporan.index') }}" class="btn btn-sm btn-danger d-block mb-2 ">
-                <i class="bx bxs-down-left fs-12"></i> Kembali
-            </a>
-        </div>
-        @endif
+        
         @if ($user->role === 'admin'|| $user->role === 'qshe')
-        <div class="col-xl-4 col-lg-4">
+        <div class="col-xl-4 col-lg-4 mt-2">
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">Histori Laporan</h5>
@@ -315,4 +447,23 @@ $user = auth()->user();
 @section('script')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Event handler untuk aksi QSHE (Setuju / Tidak Setuju)
+            document.querySelectorAll('.action-select').forEach(function (select) {
+                select.addEventListener('change', function () {
+                    const targetId = this.dataset.target;
+                    const approvalDiv = document.getElementById('approvalFields' + targetId);
+                    
+                    if (this.value === 'approve') {
+                        approvalDiv.classList.remove('d-none');
+                    } else {
+                        approvalDiv.classList.add('d-none');
+                        // Optional: Kosongkan field divisi dan PIC jika ingin reset saat tidak setuju
+                        approvalDiv.querySelector('select[name="division_id"]').value = "";
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

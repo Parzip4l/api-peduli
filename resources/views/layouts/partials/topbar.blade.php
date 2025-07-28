@@ -58,15 +58,6 @@
                     </div>
                 </div>
 
-
-                <!-- Theme Setting -->
-                <div class="topbar-item d-none d-md-flex">
-                    <button type="button" class="topbar-button" id="theme-settings-btn" data-bs-toggle="offcanvas"
-                            data-bs-target="#theme-settings-offcanvas" aria-controls="theme-settings-offcanvas">
-                        <iconify-icon icon="solar:settings-bold-duotone" class="fs-24 align-middle"></iconify-icon>
-                    </button>
-                </div>
-
                 <!-- User -->
                 <div class="dropdown topbar-item">
                     <a type="button" class="topbar-button" id="page-header-user-dropdown" data-bs-toggle="dropdown"
@@ -78,20 +69,7 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">
                         <!-- item-->
-                        <h6 class="dropdown-header">Welcome {{ auth()->check() ? auth()->user()->name : 'Guest' }}!</h6>
-                        <a class="dropdown-item" href="">
-                            <i class="bx bx-user-circle text-muted fs-18 align-middle me-1"></i><span
-                                class="align-middle">Profile</span>
-                        </a>
-
-                        <a class="dropdown-item" href="">
-                            <i class="bx bx-help-circle text-muted fs-18 align-middle me-1"></i><span
-                                class="align-middle">Help</span>
-                        </a>
-
-                        <a class="dropdown-item" href="">
-                            <i class="bx bx-lock text-muted fs-18 align-middle me-1"></i><span class="align-middle">Lock screen</span>
-                        </a>
+                        <h6 class="dropdown-header">{{ auth()->check() ? auth()->user()->name : 'Guest' }}!</h6>
 
                         <div class="dropdown-divider my-1"></div>
 
@@ -104,14 +82,6 @@
                         </form>
                     </div>
                 </div>
-
-                <!-- App Search-->
-                <form class="app-search d-none d-md-block ms-2">
-                    <div class="position-relative">
-                        <input type="search" class="form-control" placeholder="Search..." autocomplete="off" value="">
-                        <iconify-icon icon="solar:magnifer-linear" class="search-widget-icon"></iconify-icon>
-                    </div>
-                </form>
             </div>
         </div>
     </div>

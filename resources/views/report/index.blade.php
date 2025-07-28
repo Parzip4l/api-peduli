@@ -90,9 +90,11 @@
                                         <a href="{{ route('laporan.show', hashid_encode($report->id)) }}" class="btn btn-soft-danger btn-sm">
                                             <iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon>
                                         </a>
-                                        <!-- <a href="#!" class="btn btn-soft-danger btn-sm" onclick="confirmDelete({{ $report->id }})">
+                                        @if ($report->status == 'open')
+                                        <a href="javascript:void(0);" onclick="confirmDelete('{{ hashid_encode($report->id) }}')" class="btn btn-soft-danger btn-sm">
                                             <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon>
-                                        </a> -->
+                                        </a>
+                                        @endif
                                         @if ($user->role == 'QSHE' && !$report->division_id && !$report->assigned_to)
                                             <a href="#" class="btn btn-soft-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalQshe{{hashid_encode($report->id)}}">
                                                 <iconify-icon icon="solar:user-check-line-duotone" class="align-middle fs-18 me-1"></iconify-icon> Review Laporan
@@ -364,20 +366,17 @@
     });
 </script>
 <script>
-    function confirmDelete(ItemID) {
-        // Tampilkan SweetAlert konfirmasi
+    function confirmDelete(id) {
         Swal.fire({
-            title: 'Are you sure?',
-            text: 'You won\'t be able to revert this!',
+            title: 'Yakin ingin menghapus?',
+            text: "Data tidak dapat dikembalikan setelah dihapus.",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel',
-            reverseButtons: true
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Kirim permintaan AJAX untuk menghapus menu
-                fetch('/laporan/' + ItemID, {
+                fetch('/laporan/' + id, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
@@ -387,73 +386,17 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        Swal.fire(
-                            'Deleted!',
-                            'Data has been deleted.',
-                            'success'
-                        ).then(() => {
-                            location.reload(); // Muat ulang halaman untuk melihat perubahan
-                        });
+                        Swal.fire('Berhasil!', data.message, 'success').then(() => location.reload());
                     } else {
-                        Swal.fire(
-                            'Error!',
-                            data.message || 'Failed to delete Data. Please try again.', // Menampilkan pesan error dari server
-                            'error'
-                        );
+                        Swal.fire('Gagal!', data.message || 'Gagal menghapus.', 'error');
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error); 
-                    Swal.fire(
-                        'Error!',
-                        error.message || 'An error occurred. Please try again.', // Menampilkan pesan error dari exception
-                        'error'
-                    );
+                    Swal.fire('Error!', error.message, 'error');
                 });
             }
         });
     }
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".view-maintenance").forEach(button => {
-            button.addEventListener("click", function (event) {
-                event.preventDefault();
-                let maintenanceId = this.getAttribute("data-id");
-                
-                let detailContainer = document.getElementById("maintenance-detail-content");
-                detailContainer.innerHTML = "<p>Loading...</p>";
-
-                fetch(`/laporan/${maintenanceId}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    detailContainer.innerHTML = `
-                        <p><strong>ID:</strong> ${data.id}</p>
-                        <p><strong>Item:</strong> ${data.name}</p>
-                        <p><strong>Parts:</strong></p>
-                        <ul id="partsList">
-                            ${data.parts.map(part => `
-                                <li><strong>${part.name}</strong> - Backup Stock: ${part.backup_stock}</li>
-                            `).join('')}
-                        </ul>
-                    `;
-                })
-                .catch(error => {
-                    console.error("Error fetching maintenance data:", error);
-                    detailContainer.innerHTML = `<p class='text-danger'>Gagal mengambil data! (${error.message})</p>`;
-                });
-
-
-                let maintenanceOffcanvas = new bootstrap.Offcanvas(document.getElementById("maintenanceDetailCanvas"));
-                maintenanceOffcanvas.show();
-            });
-        });
-    });
 </script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
