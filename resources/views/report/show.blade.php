@@ -109,7 +109,7 @@ $user = auth()->user();
                         <div class="mb-2"><strong>Nama Pelapor:</strong><br>{{ $data->user->name }}</div>
                         @endif
                         <div class="mb-2"><strong>Jenis Pengamatan:</strong><br>{{ $data->observationType->name }}</div>
-                        <div class="mb-2"><strong>Lokasi Diamati:</strong><br>{{ $data->location->nama_lokasi }} - {{ $data->location->kode }}</div>
+                        <div class="mb-2"><strong>Lokasi Diamati:</strong><br>{{ $data->location->nama_lokasi ?? '-' }} - {{ $data->location->kode ?? '-' }}</div>
                         <div class="mb-2"><strong>Detail Lokasi:</strong><br>{{ $data->detail_lokasi }}</div>
                         <div class="mb-2"><strong>Keterangan:</strong><br>{{ $data->keterangan }}</div>
                         <div class="mb-2"><strong>Perlu Tindak Lanjut:</strong><br>{{ $data->perlu_tindak_lanjut ? 'Ya' : 'Tidak' }}</div>
