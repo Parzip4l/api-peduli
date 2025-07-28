@@ -90,10 +90,10 @@
                                         <a href="{{ route('laporan.show', hashid_encode($report->id)) }}" class="btn btn-soft-danger btn-sm">
                                             <iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon>
                                         </a>
-                                        @if ($report->status == 'open')
-                                        <a href="javascript:void(0);" onclick="confirmDelete('{{ hashid_encode($report->id) }}')" class="btn btn-soft-danger btn-sm">
-                                            <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon>
-                                        </a>
+                                        @if ($user->role == 'qshe' || ($user->role != 'qshe' && $report->status == 'open'))
+                                            <a href="javascript:void(0);" onclick="confirmDelete('{{ hashid_encode($report->id) }}')" class="btn btn-soft-danger btn-sm">
+                                                <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon>
+                                            </a>
                                         @endif
                                         @if ($user->role == 'QSHE' && !$report->division_id && !$report->assigned_to)
                                             <a href="#" class="btn btn-soft-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalQshe{{hashid_encode($report->id)}}">
