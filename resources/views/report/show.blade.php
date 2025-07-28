@@ -71,7 +71,7 @@ $user = auth()->user();
                                 <p class="mb-2"><strong>{{ $data->user->name }}</strong></p>
                                 @endif
                                 <p class="mb-2"><strong>{{ $data->observationType->name }}</strong></p>
-                                <p class="mb-2"><strong>{{ $data->location->nama_lokasi }} - {{ $data->location->kode }}</strong></p>
+                                <p class="mb-2"><strong>{{ $data->location->nama_lokasi ?? '-' }} - {{ $data->location->kode ?? '-' }}</strong></p>
                                 <p class="mb-2"><strong>{{ $data->detail_lokasi }}</strong></p>
                                 <p class="mb-2"><strong>{{ $data->keterangan }}</strong></p>
                                 <p class="mb-2"><strong>{{ $data->hazardPotential->name ?? '-' }}</strong></p>
