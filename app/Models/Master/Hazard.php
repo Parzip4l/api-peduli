@@ -12,7 +12,7 @@ class Hazard extends Model
     use HasFactory;
 
     protected $table = 'hazard_potentials';
-    protected $fillable = ['name'];
+    protected $fillable = ['name','deskripsi','klasifikasi_point'];
 
     public function reports() { return $this->hasMany(Reports::class); }
 }

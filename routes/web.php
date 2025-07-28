@@ -50,6 +50,8 @@ Route::group(['prefix' => '/', 'middleware' => 'auth'], function () {
     Route::resource('lokasi', App\Http\Controllers\Master\LocationController::class);
     Route::resource('pic', App\Http\Controllers\Master\PicController::class);
         Route::post('/user/pic-update', [App\Http\Controllers\Master\PicController::class, 'updatePIC'])->name('pic.dataupdate');
+    Route::resource('hazard', App\Http\Controllers\Master\HazardController::class);
+    Route::resource('observation', App\Http\Controllers\Master\ObservationController::class);
 
 
     // Laporan
@@ -63,7 +65,3 @@ Route::group(['prefix' => '/', 'middleware' => 'auth'], function () {
     Route::get('/get-pic-by-division/{id}', [App\Http\Controllers\Report\ReportController::class, 'getPicByDivision']);
 
 });
-
-// Route::get('/ldap-login', [TestLdapController::class, 'showLoginForm'])->name('ldap.login');
-// Route::post('/ldap-login', [TestLdapController::class, 'login']);
-// Route::post('/login', [TestLdapController::class, 'login']);

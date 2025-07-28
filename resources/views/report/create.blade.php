@@ -71,7 +71,7 @@
                             <select class="form-control" id="choices-single-groups" data-choices data-choices-groups data-placeholder="Select Item" name="hazard_potential_id">
                                 <option value="">-- Pilih Jenis --</option>
                                 @foreach ($hazard as $haz)
-                                    <option value="{{$haz->id}}">{{$haz->name}}</option>
+                                    <option value="{{$haz->id}}">{{$haz->deskripsi}} [{{$haz->name}}]</option>
                                 @endforeach
                             </select>
                         </div>

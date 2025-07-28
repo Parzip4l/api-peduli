@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('username')->unique()->after('email');
+        Schema::table('hazard_potentials', function (Blueprint $table) {
+            $table->string('deskripsi')->nullable();
+            $table->integer('klasifikasi_point');
         });
     }
 
@@ -21,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('hazard', function (Blueprint $table) {
             //
         });
     }

@@ -20,7 +20,7 @@ class MenuController extends Controller
         $menu = Menu::when($search, function ($query, $search) {
             return $query->where('title', 'like', '%' . $search . '%');
         })
-        ->paginate(10);
+        ->paginate(30);
 
         // Jika permintaan AJAX, kembalikan hanya bagian tampilan yang perlu diperbarui
         if ($request->ajax()) {
