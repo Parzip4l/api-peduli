@@ -24,6 +24,7 @@ use App\Models\Master\Employee;
 use App\Models\Master\Observation;
 use App\Models\Master\Hazard;
 use App\Models\Master\Divisions;
+use App\Models\Master\Notification as NotificationModel;
 
 class ReportController extends Controller
 {
@@ -204,6 +205,15 @@ class ReportController extends Controller
                 'catatan' => $request->catatan ?? 'Ditolak oleh QSHE',
                 'tanggal' => now(),
             ]);
+
+            // Notifikasi
+            NotificationModel::create([
+                'user_id' => $report->user_id,
+                'title' => 'Laporan Ditolak QSHE',
+                'message' => 'Laporan "' . $report->judul . '" ditolak oleh QSHE. Catatan: ' . ($request->catatan ?? '-'),
+                'url' => route('laporan.show', $hashid),
+            ]);
+            
             return redirect()->route('laporan.index')->with('success', 'Laporan berhasil ditolak dan dikembalikan ke pelapor!');
         }
 
@@ -232,6 +242,14 @@ class ReportController extends Controller
                 'tipe' => 'assigned_to_division',
                 'catatan' => $request->catatan ?? 'Disetujui oleh QSHE, Menunggu Approval dari PIC',
                 'tanggal' => now(),
+            ]);
+
+            // Notifikasi
+            Notification::create([
+                'user_id' => $report->user_id,
+                'title' => 'Laporan Disetujui QSHE',
+                'message' => 'Laporan "' . $report->judul . '" disetujui QSHE dan diteruskan ke divisi terkait.',
+                'url' => route('laporan.show', $hashid),
             ]);
 
             return redirect()->route('laporan.index')->with('success', 'Laporan disetujui dan diteruskan ke divisi/PIC.');
@@ -279,6 +297,14 @@ class ReportController extends Controller
                 'tanggal' => now(),
             ]);
 
+            Notification::create([
+                'user_id' => $report->user_id,
+                'title' => 'Laporan Ditolak PIC',
+                'message' => 'Laporan Anda ditolak oleh PIC. Silakan cek dan perbaiki jika diperlukan.',
+                'url' => route('laporan.show', $hashid),
+                'is_read' => false,
+            ]);
+
             return redirect()->route('laporan.index')->with('success', 'Laporan berhasil ditolak.');
         }
 
@@ -291,6 +317,14 @@ class ReportController extends Controller
                 'tipe' => 'follow_up_submitted',
                 'catatan' => $request->catatan ?? 'Diterima oleh PIC',
                 'tanggal' => now(),
+            ]);
+
+            Notification::create([
+                'user_id' => $report->user_id, // atau user_id tujuan notifikasi
+                'title' => 'Laporan Diterima PIC',
+                'message' => 'Laporan Anda telah diterima dan akan segera ditindaklanjuti.',
+                'url' => route('laporan.show', $hashid),
+                'is_read' => false,
             ]);
 
             return redirect()->route('laporan.index')->with('success', 'Laporan berhasil diterima silahkan update progress !');

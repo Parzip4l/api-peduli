@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\TestLdapController;
 use App\Http\Controllers\LdapLoginController;
+use App\Http\Controllers\Master\NotificationController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -63,5 +64,11 @@ Route::group(['prefix' => '/', 'middleware' => 'auth'], function () {
     Route::post('/laporan/{hashid}/review-submit-pic', [App\Http\Controllers\Report\ReportController::class, 'reviewProgress'])->name('laporan.review-submit.pic');
 
     Route::get('/get-pic-by-division/{id}', [App\Http\Controllers\Report\ReportController::class, 'getPicByDivision']);
+
+    // Notifications
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsRead']);
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::delete('/notifications/clear', [NotificationController::class, 'clearAll']);
 
 });

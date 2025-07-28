@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+use App\Models\Master\Notification;
+use Illuminate\Support\Facades\Log;
 
 class NotificationController extends Controller
 {
@@ -12,54 +16,54 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        //
+       $notifications = Notification::where('user_id', Auth::id())
+            ->latest()
+            ->take(10)
+            ->get();
+
+        $unreadCount = Notification::where('user_id', Auth::id())
+            ->where('is_read', false)
+            ->count();
+
+        return response()->json([
+            'notifications' => $notifications,
+            'unread_count' => $unreadCount,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function markAsRead($id, Request $request)
     {
-        //
+        $notification = Notification::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if (!$notification) {
+            return response()->json(['success' => false, 'message' => 'Notification not found'], 404);
+        }
+
+        $notification->is_read = true;
+        $notification->save();
+
+        Log::info('Marking notification as read', [
+            'notification_id' => $id,
+            'auth_user' => auth()->id(),
+            'found' => $notification ? true : false
+        ]);
+
+        return response()->json(['success' => true]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+
+    public function clearAll()
     {
-        //
+        Notification::where('user_id', Auth::id())->delete();
+        return response()->json(['success' => true]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function markAllAsRead()
     {
-        //
+        Notification::where('user_id', Auth::id())->update(['is_read' => true]);
+        return response()->json(['success' => true]);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    
 }
