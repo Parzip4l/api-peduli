@@ -1,5 +1,4 @@
-<div class="row">
-    <!-- Kartu Statistik -->
+<div class="">
     <div class="col-md-3">
         <div class="card card-body bg-white text-white">
             <h6>Total Laporan</h6>

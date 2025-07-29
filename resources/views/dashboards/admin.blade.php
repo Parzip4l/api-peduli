@@ -1,39 +1,36 @@
 {{-- Statistik ringkas --}}
-<div class="row">
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h6 class="text-muted">Total Laporan</h6>   
-                <h3>{{ $totalReports ?? 0 }}</h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h6 class="text-muted">Selesai</h6>
-                <h3>{{ $closedReports ?? 0 }}</h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h6 class="text-muted">Belum Ditindaklanjuti</h6>
-                <h3>{{ $pendingReports ?? 0 }}</h3>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card text-center">
-            <div class="card-body">
-                <h6 class="text-muted">Sedang Diproses</h6>
-                <h3>{{ $onProgressReports ?? 0 }}</h3>
-            </div>
+<div class="col-md-3">
+    <div class="card text-center">
+        <div class="card-body">
+            <h6 class="text-muted">Total Laporan</h6>   
+            <h3>{{ $totalReports ?? 0 }}</h3>
         </div>
     </div>
 </div>
-
+<div class="col-md-3">
+    <div class="card text-center">
+        <div class="card-body">
+            <h6 class="text-muted">Selesai</h6>
+            <h3>{{ $closedReports ?? 0 }}</h3>
+        </div>
+    </div>
+</div>
+<div class="col-md-3">
+    <div class="card text-center">
+        <div class="card-body">
+            <h6 class="text-muted">Belum Ditindaklanjuti</h6>
+            <h3>{{ $pendingReports ?? 0 }}</h3>
+        </div>
+    </div>
+</div>
+<div class="col-md-3">
+    <div class="card text-center">
+        <div class="card-body">
+            <h6 class="text-muted">Sedang Diproses</h6>
+            <h3>{{ $onProgressReports ?? 0 }}</h3>
+        </div>
+    </div>
+</div>
 {{-- Grafik tren laporan per bulan --}}
 <div class="mb-3">
     <label for="filter-tahun" class="form-label">Filter Tahun</label>
