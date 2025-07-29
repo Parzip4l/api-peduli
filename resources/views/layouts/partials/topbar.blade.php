@@ -158,3 +158,16 @@
         }
     });
 </script>
+<style>
+    @media (max-width: 600px) {
+        .topbar .dropdown .dropdown-menu {
+            width: 95%;
+        }
+        .dropdown-menu.show {
+            top: 100% !important;
+            margin-top: 0px !important;
+            margin-left: 10px !important;
+            margin-right: 10px !important;
+        }
+    }
+</style>
