@@ -69,7 +69,7 @@
                     <table class="table mb-0">
                         <thead class="bg-light bg-opacity-50">
                             <tr>
-                                <th>Nomor</th>
+                                <th class="ps-3">Nomor</th>
                                 <th>Title</th>
                                 <th>Tanggal</th>
                                 <th>Status</th>
@@ -80,7 +80,7 @@
                         <tbody id="user-table-body">
                             @foreach($reports as $report)
                             <tr>
-                                <td>{{$report->nomor_laporan}}</td>
+                                <td class="ps-3">{{$report->nomor_laporan}}</td>
                                 <td>{{$report->judul}}</td>  
                                 <td>{{date('d-m-Y', strtotime($report->tanggal_laporan))}}</td>  
                                 <td><span class="badge {{ $statusColors[$report->status] ?? 'bg-secondary' }}">{{ $report->status }}</span></td>  

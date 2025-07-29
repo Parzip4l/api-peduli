@@ -20,7 +20,7 @@
         @include('dashboards.qshe')
 
     {{-- DASHBOARD PIC --}}
-    @elseif (strtolower(auth()->user()->role) === 'pic')
+    @elseif (strtolower(auth()->user()->is_pic) === '1')
         @include('dashboards.pic')
 
     {{-- DEFAULT / LAINNYA --}}
