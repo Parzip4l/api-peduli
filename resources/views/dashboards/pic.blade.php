@@ -23,17 +23,16 @@
     </div>
 </div>
 
-<div class="row mt-4">
-    <!-- Tabel Laporan QSHE -->
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card-header">Laporan Perlu Tindakan Saya</div>
-            <div class="card-body">
-                <div id="tabel-laporan2" class="table-responsive"></div>
-            </div>
+<!-- Tabel Laporan QSHE -->
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header">Laporan Perlu Tindakan Saya</div>
+        <div class="card-body">
+            <div id="tabel-laporan2" class="table-responsive"></div>
         </div>
     </div>
 </div>
+
 <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
 
 <!-- ApexCharts & SweetAlert -->

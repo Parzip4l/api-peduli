@@ -25,36 +25,31 @@
     </div>
 </div>
 
-<div class="row mt-4">
-    <!-- Tabel Laporan QSHE -->
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card-header">Laporan Perlu Tindakan QSHE</div>
-            <div class="card-body">
-                <div id="tabel-laporan2" class="table-responsive"></div>
-            </div>
+<!-- Tabel Laporan QSHE -->
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header">Laporan Perlu Tindakan QSHE</div>
+        <div class="card-body">
+            <div id="tabel-laporan2" class="table-responsive"></div>
         </div>
     </div>
 </div>
 
-<div class="row mt-4">
-    <!-- Grafik Tren Bulanan -->
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">Grafik Tren Laporan K3 Bulanan</div>
-            <div class="card-body">
-                <div id="chart-laporan-bulanan"></div>
-            </div>
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-header">Grafik Tren Laporan K3 Bulanan</div>
+        <div class="card-body">
+            <div id="chart-laporan-bulanan"></div>
         </div>
     </div>
+</div>
 
-    <!-- Grafik Area Rawan Kecelakaan -->
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">Area Rawan Kecelakaan</div>
-            <div class="card-body">
-                <div id="chart-kategori"></div>
-            </div>
+<!-- Grafik Area Rawan Kecelakaan -->
+<div class="col-md-6">
+    <div class="card">
+        <div class="card-header">Area Rawan Kecelakaan</div>
+        <div class="card-body">
+            <div id="chart-kategori"></div>
         </div>
     </div>
 </div>
