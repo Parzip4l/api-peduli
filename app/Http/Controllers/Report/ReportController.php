@@ -247,7 +247,7 @@ class ReportController extends Controller
             ]);
 
             // Notifikasi
-            Notification::create([
+            NotificationModel::create([
                 'user_id' => $report->user_id,
                 'title' => 'Laporan Disetujui QSHE',
                 'message' => 'Laporan "' . $report->judul . '" disetujui QSHE dan diteruskan ke divisi terkait.',
