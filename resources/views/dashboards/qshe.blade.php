@@ -119,3 +119,34 @@
         window.location.href = "{{ route('dashboard.index') }}?tahun=" + tahun;
     }
 </script>
+@if (strtolower(auth()->user()->role) === 'qshe')
+<script>
+    var laporanBulananChart = new ApexCharts(document.querySelector("#chart-laporan-bulanan"), {
+        chart: {
+            type: 'line',
+            height: 300,
+            toolbar: {
+                show: false
+            }
+        },
+        series: [{
+            name: 'Laporan',
+            data: {!! json_encode($monthlyReportData ?? []) !!}
+        }],
+        xaxis: {
+            categories: {!! json_encode($monthlyLabels ?? []) !!}
+        }
+    });
+    laporanBulananChart.render();
+
+    var kategoriChart = new ApexCharts(document.querySelector("#chart-kategori"), {
+        chart: { type: 'pie', height: 300 },
+        series: {!! json_encode(array_values($kategoriData ?? [])) !!},
+        labels: {!! json_encode(array_keys($kategoriData ?? [])) !!},
+        legend: {
+            position: 'bottom'
+        }
+    });
+    kategoriChart.render();
+</script>
+@endif
