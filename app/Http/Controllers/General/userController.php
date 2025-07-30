@@ -36,7 +36,6 @@ class userController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi input
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
@@ -51,7 +50,6 @@ class userController extends Controller
         }
 
         try {
-            // Membuat user baru dengan remember_token
             $user = User::create([
                 'name' => $request->input('name'),
                 'username' => $request->input('username'),
@@ -70,4 +68,40 @@ class userController extends Controller
             return redirect()->back()->with('success', 'Failed to create user:' . $e->getMessage());
         }
     }
+
+    public function show($id)
+    {
+
+    }
+    public function update(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $validator = Validator::make($request->all(), [
+            'username' => 'nullable|string|max:255|unique:users,username,' . $user->id,
+            'email' => 'nullable|email|unique:users,email,' . $user->id,
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            if ($request->has('username')) {
+                $user->username = $request->input('username');
+            }
+
+            if ($request->has('email')) {
+                $user->email = $request->input('email');
+            }
+
+            $user->save();
+
+            return redirect()->back()->with('success', 'User updated successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to update user: ' . $e->getMessage());
+        }
+    }
+
 }

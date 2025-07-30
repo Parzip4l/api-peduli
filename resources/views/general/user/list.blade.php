@@ -9,10 +9,6 @@
                         <h4 class="card-title">
                             List User Active
                         </h4>
-
-                        <a href="{{ route('user.create') }}" class="btn btn-sm btn-soft-primary">
-                            <i class="bx bx-plus me-1"></i>Create User
-                        </a>
                     </div>
                 </div>
                 <!-- end card body -->
@@ -29,7 +25,10 @@
                         <thead class="bg-light bg-opacity-50">
                             <tr>
                                 <th class="ps-3">
-                                    Nama
+                                    Nama Lengkap
+                                </th>
+                                <th>
+                                    Username
                                 </th>
                                 <th>
                                     Email
@@ -48,6 +47,7 @@
                                 <td class="ps-3">
                                     <a href="apps-ecommerce-order-detail.html">{{ $data->name }}</a>
                                 </td>
+                                <td>{{ $data->username ?? '-'}}</td>
                                 <td>{{ $data->email }}</td>
                                 <td>
                                     @php
@@ -57,9 +57,7 @@
                                 </td>
                                 <td>
                                     <div class="d-flex gap-2">
-                                        <a href="#!" class="btn btn-light btn-sm"><iconify-icon icon="solar:eye-broken" class="align-middle fs-18"></iconify-icon></a>
-                                        <a href="#!" class="btn btn-soft-primary btn-sm"><iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon></a>
-                                        <a href="#!" class="btn btn-soft-danger btn-sm"><iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon></a>
+                                        <a href="#!" class="btn btn-soft-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ModalUserUpdate{{ $data->id }}"><iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon></a>
                                     </div>
                                 </td>
                             </tr>
@@ -83,7 +81,38 @@
                     
                 </div>
             </div>
+            @foreach($user as $data)
+            <div class="modal fade" id="ModalUserUpdate{{$data->id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Update Data User</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ route('user.update', $data->id)}}" method="POST" id="ModalDivisi">
+                                @csrf
+                                @method('PUT')
+                                <div class="mb-2">
+                                    <label for="" class="form-label">Username</label>
+                                    <input type="text" name="username" class="form-control" value="{{$data->username}}">
+                                </div>
+                                <div class="mb-2">
+                                    <label for="" class="form-label">email</label>
+                                    <input type="text" name="email" class="form-control" value="{{$data->email}}">
+                                </div>
 
+                                <div class="d-flex justify-content-between mt-3">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                    <button type="submit" class="btn btn-danger">Update Data</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endforeach
             <!-- end card -->
         </div>
         <!-- end col -->
