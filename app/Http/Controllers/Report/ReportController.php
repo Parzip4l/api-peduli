@@ -45,7 +45,7 @@ class ReportController extends Controller
         }
 
         // Jika PIC, hanya tampilkan laporan dari divisi dia
-        if (strtolower($user->is_pic) === '1') {
+        if ($user->is_pic === 1) {
             $query->where('division_id', $user->division_id);
         }
 
