@@ -27,7 +27,7 @@ class dashboardController extends Controller
             return $this->qsheDashboard();
         }
 
-        if (strtolower($user->role) === 'pic') {
+        if (strtolower($user->is_pic) === '1') {
            return $this->picDashboard();
         }
 
