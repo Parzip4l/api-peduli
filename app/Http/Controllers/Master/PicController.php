@@ -54,6 +54,7 @@ class PicController extends Controller
 
             $user->division_id = $request->divisi;
             $user->is_pic = 1;
+            $user->role = 'pic';
             $user->save();
 
             return redirect()->back()->with('success', 'Data PIC berhasil diperbarui.');
