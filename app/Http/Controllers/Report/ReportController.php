@@ -299,7 +299,7 @@ class ReportController extends Controller
                 'tanggal' => now(),
             ]);
 
-            Notification::create([
+            NotificationModel::create([
                 'user_id' => $report->user_id,
                 'title' => 'Laporan Ditolak PIC',
                 'message' => 'Laporan Anda ditolak oleh PIC. Silakan cek dan perbaiki jika diperlukan.',
@@ -321,7 +321,7 @@ class ReportController extends Controller
                 'tanggal' => now(),
             ]);
 
-            Notification::create([
+            NotificationModel::create([
                 'user_id' => $report->user_id, // atau user_id tujuan notifikasi
                 'title' => 'Laporan Diterima PIC',
                 'message' => 'Laporan Anda telah diterima dan akan segera ditindaklanjuti.',
