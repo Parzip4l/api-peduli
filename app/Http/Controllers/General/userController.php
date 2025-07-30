@@ -73,12 +73,15 @@ class userController extends Controller
     {
 
     }
+
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
+
         $validator = Validator::make($request->all(), [
             'username' => 'nullable|string|max:255|unique:users,username,' . $user->id,
             'email' => 'nullable|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
 
         if ($validator->fails()) {
@@ -96,11 +99,39 @@ class userController extends Controller
                 $user->email = $request->input('email');
             }
 
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->input('password'));
+            }
+
             $user->save();
 
             return redirect()->back()->with('success', 'User updated successfully!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to update user: ' . $e->getMessage());
+        }
+    }
+
+
+    public function destroy($id)
+    {
+        $currentUser = auth()->user();
+        if ($currentUser->role !== 'admin') {
+            return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk menghapus user.');
+        }
+
+        try {
+            $user = User::findOrFail($id);
+
+            // Tambahan: Cegah admin menghapus dirinya sendiri (opsional)
+            if ($currentUser->id === $user->id) {
+                return redirect()->back()->with('error', 'Anda tidak bisa menghapus akun Anda sendiri.');
+            }
+
+            $user->delete();
+
+            return redirect()->back()->with('success', 'User berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal menghapus user: ' . $e->getMessage());
         }
     }
 

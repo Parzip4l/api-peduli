@@ -1,6 +1,17 @@
 @extends('layouts.vertical', ['title' => 'User List'])
 
 @section('content')
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
     <div class="row">
         <div class="col">
             <div class="card">
@@ -58,6 +69,11 @@
                                 <td>
                                     <div class="d-flex gap-2">
                                         <a href="#!" class="btn btn-soft-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ModalUserUpdate{{ $data->id }}"><iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon></a>
+                                        <form action="{{ route('user.destroy', $data->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus user ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger">Hapus</button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -82,36 +98,57 @@
                 </div>
             </div>
             @foreach($user as $data)
-            <div class="modal fade" id="ModalUserUpdate{{$data->id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel">Update Data User</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="{{ route('user.update', $data->id)}}" method="POST" id="ModalDivisi">
-                                @csrf
-                                @method('PUT')
-                                <div class="mb-2">
-                                    <label for="" class="form-label">Username</label>
-                                    <input type="text" name="username" class="form-control" value="{{$data->username}}">
-                                </div>
-                                <div class="mb-2">
-                                    <label for="" class="form-label">email</label>
-                                    <input type="text" name="email" class="form-control" value="{{$data->email}}">
-                                </div>
+                <div class="modal fade" id="ModalUserUpdate{{$data->id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Update Data User</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ route('user.update', $data->id)}}" method="POST" id="ModalDivisi">
+                                    @csrf
+                                    @method('PUT')
+                                    <div class="mb-2">
+                                        <label for="" class="form-label">Username</label>
+                                        <input type="text" name="username" class="form-control" value="{{$data->username}}" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label for="" class="form-label">email</label>
+                                        <input type="text" name="email" class="form-control" value="{{$data->email}}" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Password Baru (opsional)</label>
+                                        <div class="input-group">
+                                            <input type="password" name="password" id="password{{$data->id}}" class="form-control">
+                                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="password{{$data->id}}">
+                                                👁️
+                                            </button>
+                                        </div>
+                                        <div class="text-danger small" id="passwordError{{$data->id}}"></div>
+                                    </div>
 
-                                <div class="d-flex justify-content-between mt-3">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                    <button type="submit" class="btn btn-danger">Update Data</button>
-                                </div>
-                            </form>
+                                    <div class="mb-2">
+                                        <label class="form-label">Konfirmasi Password</label>
+                                        <div class="input-group">
+                                            <input type="password" name="password_confirmation" id="password_confirmation{{$data->id}}" class="form-control">
+                                            <button class="btn btn-outline-secondary toggle-password" type="button" data-target="password_confirmation{{$data->id}}">
+                                                👁️
+                                            </button>
+                                        </div>
+                                    </div>
 
+
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                        <button type="submit" class="btn btn-danger">Update Data</button>
+                                    </div>
+                                </form>
+
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             @endforeach
             <!-- end card -->
         </div>
@@ -140,5 +177,62 @@
         });
     });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Toggle Show/Hide Password
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function () {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                this.textContent = '👁️';
+            }
+        });
+    });
+
+    // Validasi Password Tooltip
+    document.querySelectorAll('form[id^="ModalDivisi"]').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            const passwordInput = form.querySelector('input[name="password"]');
+            const passwordError = form.querySelector('[id^="passwordError"]');
+            const password = passwordInput.value;
+            let errors = [];
+
+            passwordError.textContent = ''; // reset
+
+            if (password.length > 0) {
+                if (password.length < 8) {
+                    errors.push("Minimal 8 karakter");
+                }
+                if (!/[A-Z]/.test(password)) {
+                    errors.push("Harus mengandung huruf besar");
+                }
+                if (!/[a-z]/.test(password)) {
+                    errors.push("Harus mengandung huruf kecil");
+                }
+                if (!/[0-9]/.test(password)) {
+                    errors.push("Harus mengandung angka");
+                }
+                if (!/[^A-Za-z0-9]/.test(password)) {
+                    errors.push("Harus mengandung karakter khusus");
+                }
+
+                if (errors.length > 0) {
+                    e.preventDefault();
+                    passwordError.innerHTML = errors.map(err => `• ${err}`).join('<br>');
+                    passwordInput.classList.add('is-invalid');
+                } else {
+                    passwordInput.classList.remove('is-invalid');
+                }
+            }
+        });
+    });
+});
+</script>
+
 
 @endsection
