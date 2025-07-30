@@ -11,6 +11,6 @@ Laporan Anda telah berhasil kami terima dan sedang ditinjau oleh tim kami.
 Terima kasih telah berpartisipasi dalam menjaga keselamatan dan kenyamanan bersama.
 
 Salam Hormat,  
-**Tim QSHE LRT Jakarta**
+**Tim SHE LRT Jakarta**
 
 @endcomponent
