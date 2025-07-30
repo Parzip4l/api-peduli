@@ -40,7 +40,12 @@
 
                                 <div class="mb-3">
                                     <label class="form-label" for="password">Password</label>
-                                    <input type="password" id="password" name="password" class="form-control" required>
+                                    <div class="input-group">
+                                        <input type="password" id="password" name="password" class="form-control" required>
+                                        <button type="button" class="btn btn-outline-primary" id="togglePassword">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div class="mb-3">
@@ -71,3 +76,20 @@
     </div>
 </div>
 @endsection
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggle = document.getElementById('togglePassword');
+        const password = document.getElementById('password');
+
+        toggle.addEventListener('click', function () {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+
+            // Ganti ikon mata
+            this.innerHTML = type === 'text'
+                ? '<i class="bi bi-eye-slash"></i>'
+                : '<i class="bi bi-eye"></i>';
+        });
+    });
+</script>

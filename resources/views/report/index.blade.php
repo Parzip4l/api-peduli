@@ -41,11 +41,11 @@
                         
                     </div>
                     <div class="row mt-2">
-                        <div class="col-md-6">
+                        <div class="col-md-4 mb-2">
                             <label for="" class="mb-1">Search Data</label>
                             <input type="text" id="search-input" class="form-control" placeholder="Search by item name" value="{{ request()->get('search') }}">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label for="" class="mb-1">Filter Berdasarkan Status</label>
                             <form method="GET" class="mb-3">
                                 <select name="status" class="form-select" onchange="this.form.submit()">
@@ -56,6 +56,19 @@
                                     <option value="under_review_by_qshe" {{ request('status') == 'under_review_by_qshe' ? 'selected' : '' }}>Under Review</option>
                                     <option value="closed" {{ request('status') == 'closed' ? 'selected' : '' }}>Closed</option>
                                     <option value="follow_up_rejected" {{ request('status') == 'follow_up_rejected' ? 'selected' : '' }}>Follow Up Rejected</option>
+                                </select>
+                            </form>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="" class="mb-1">Filter Berdasarkan Lokasi</label>
+                            <form method="GET" class="mb-3">
+                                <select name="lokasi" class="form-select" onchange="this.form.submit()">
+                                    <option value="">-- Semua Lokasi --</option>
+                                    @foreach ($lokasi as $item)
+                                        <option value="{{ $item->id }}" {{ request('lokasi') == $item->id ? 'selected' : '' }}>
+                                            {{ $item->nama_lokasi }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </form>
                         </div>
@@ -128,7 +141,7 @@
             <!-- end card -->
 
             <!-- Mobile View -->
-            <div class="d-block d-md-none">
+            <div class="d-block d-md-none" id="card-mobile-wrapper">
 
                 @forelse($reports as $report)
                     <div class="card mb-3">
@@ -335,7 +348,14 @@
                     page: page       // Send the current page number
                 },
                 success: function(response) {
-                    $('#user-table-body').html($(response).find('#user-table-body').html());  // Replace table body with filtered data
+                    if ($('#user-table-body').length) {
+                        $('#user-table-body').html($(response).find('#user-table-body').html());
+                    }
+
+                    // Update konten kartu (mobile)
+                    if ($('#card-mobile-wrapper').length) {
+                        $('#card-mobile-wrapper').html($(response).find('#card-mobile-wrapper').html());
+                    }  // Replace table body with filtered data
                     $('.pagination').html($(response).find('.pagination').html());  // Replace pagination
                 }
             });
@@ -358,7 +378,14 @@
                     page: page       // Send the page number
                 },
                 success: function(response) {
-                    $('#user-table-body').html($(response).find('#user-table-body').html());  // Replace table body with filtered data
+                    if ($('#user-table-body').length) {
+                        $('#user-table-body').html($(response).find('#user-table-body').html());
+                    }
+
+                    // Update konten kartu (mobile)
+                    if ($('#card-mobile-wrapper').length) {
+                        $('#card-mobile-wrapper').html($(response).find('#card-mobile-wrapper').html());
+                    }  // Replace table body with filtered data
                     $('.pagination').html($(response).find('.pagination').html());  // Replace pagination
                 }
             });

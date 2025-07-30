@@ -32,6 +32,7 @@ class ReportController extends Controller
     {
         $search = $request->query('search');
         $status = $request->query('status'); 
+        $lokasi = $request->query('lokasi'); 
         $perPage = $request->query('per_page', 10);
 
         $user = Auth::user();
@@ -62,10 +63,16 @@ class ReportController extends Controller
             $query->where('status', $status);
         }
 
+        // Filter Lokasi
+        if ($lokasi && $lokasi !== '') {
+            $query->where('location_id', $lokasi);
+        }
+
         $reports = $query->orderBy('id', 'desc')->paginate($perPage);
         $divisi = Divisions::all();
+        $lokasi = Locations::all();
 
-        return view('report.index', compact('reports', 'divisi', 'status', 'search'));
+        return view('report.index', compact('reports', 'divisi', 'status', 'search','lokasi'));
     }
 
 
