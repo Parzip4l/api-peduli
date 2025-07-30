@@ -46,11 +46,59 @@ class dashboardController extends Controller
         $pendingReports = $reports->where('status', 'open')->count();
         $onProgressReports = $reports->where('status', 'assigned_to_division')->count();
 
+        $statuses = ['open', 'assigned_to_division', 'closed'];
+
+        $bahayaDataRaw = DB::table('reports')
+            ->join('divisions', 'reports.division_id', '=', 'divisions.id')
+            ->where('reports.bahaya_id', 'potensi bahaya') // ganti sesuai kebutuhan
+            ->select('divisions.name as division', 'reports.status', DB::raw('COUNT(*) as total'))
+            ->groupBy('divisions.name', 'reports.status')
+            ->get();
+
+        // Siapkan struktur data
+        $divisions = [];
+        $seriesData = [
+            'open' => [],
+            'assigned_to_division' => [],
+            'closed' => [],
+        ];
+
+        // Susun data per divisi
+        foreach ($bahayaDataRaw as $row) {
+            $div = $row->division;
+            $status = $row->status;
+            $count = $row->total;
+
+            if (!in_array($div, $divisions)) {
+                $divisions[] = $div;
+            }
+
+            foreach ($statuses as $s) {
+                if (!isset($seriesData[$s][$div])) {
+                    $seriesData[$s][$div] = 0;
+                }
+            }
+
+            $seriesData[$status][$div] = $count;
+        }
+
+        // Buat format untuk ApexCharts
+        $series = [];
+        foreach ($statuses as $status) {
+            $series[] = [
+                'name' => ucfirst(str_replace('_', ' ', $status)),
+                'data' => array_map(function ($division) use ($seriesData, $status) {
+                    return $seriesData[$status][$division] ?? 0;
+                }, $divisions),
+            ];
+        }
+
         // Laporan terbaru 
         $recentReports = Reports::with(['pelapor', 'division'])
                             ->orderBy('created_at', 'desc')
                             ->take(5)
                             ->get();
+
         // Data laporan per bulan untuk tahun tertentu
         $monthlyLabels = [];
         $monthlyReportData = [];
@@ -88,7 +136,9 @@ class dashboardController extends Controller
             'monthlyReportData' => $monthlyReportData,
             'kategoriData' => $kategoriData,
             'availableYears' => $availableYears,
-            'selectedYear' => $selectedYear
+            'selectedYear' => $selectedYear,
+            'bahayaDivisions' => $divisions,
+            'bahayaSeries' => $series,
         ]);
     }
 
@@ -112,6 +162,53 @@ class dashboardController extends Controller
                             ->orderBy('created_at', 'desc')
                             ->take(5)
                             ->get();
+
+        $statuses = ['open', 'assigned_to_division', 'closed'];
+
+        $bahayaDataRaw = DB::table('reports')
+            ->join('divisions', 'reports.division_id', '=', 'divisions.id')
+            ->where('reports.bahaya_id', 'potensi bahaya') // ganti sesuai kebutuhan
+            ->select('divisions.name as division', 'reports.status', DB::raw('COUNT(*) as total'))
+            ->groupBy('divisions.name', 'reports.status')
+            ->get();
+
+        // Siapkan struktur data
+        $divisions = [];
+        $seriesData = [
+            'open' => [],
+            'assigned_to_division' => [],
+            'closed' => [],
+        ];
+
+        // Susun data per divisi
+        foreach ($bahayaDataRaw as $row) {
+            $div = $row->division;
+            $status = $row->status;
+            $count = $row->total;
+
+            if (!in_array($div, $divisions)) {
+                $divisions[] = $div;
+            }
+
+            foreach ($statuses as $s) {
+                if (!isset($seriesData[$s][$div])) {
+                    $seriesData[$s][$div] = 0;
+                }
+            }
+
+            $seriesData[$status][$div] = $count;
+        }
+
+        // Buat format untuk ApexCharts
+        $series = [];
+        foreach ($statuses as $status) {
+            $series[] = [
+                'name' => ucfirst(str_replace('_', ' ', $status)),
+                'data' => array_map(function ($division) use ($seriesData, $status) {
+                    return $seriesData[$status][$division] ?? 0;
+                }, $divisions),
+            ];
+        }
 
         // Data laporan per bulan untuk tahun tertentu
         $monthlyLabels = [];
@@ -150,7 +247,9 @@ class dashboardController extends Controller
             'monthlyReportData' => $monthlyReportData,
             'kategoriData' => $kategoriData,
             'availableYears' => $availableYears,
-            'selectedYear' => $selectedYear
+            'selectedYear' => $selectedYear,
+            'bahayaDivisions' => $divisions,
+            'bahayaSeries' => $series,
         ]);
     }
 

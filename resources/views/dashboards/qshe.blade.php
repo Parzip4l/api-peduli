@@ -33,6 +33,17 @@
     </div>
 </div>
 
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">Laporan Potensi Bahaya per Divisi</h5>
+        </div>
+        <div class="card-body">
+            <div id="chartBahayaStatusDivisi"></div>
+        </div>
+    </div>
+</div>
+
 <div class="col-md-6">
     <div class="card">
         <div class="card-header">Grafik Tren Laporan K3 Bulanan</div>
@@ -41,6 +52,8 @@
         </div>
     </div>
 </div>
+
+
 
 <!-- Grafik Area Rawan Kecelakaan -->
 <div class="col-md-6">
@@ -150,3 +163,53 @@
     kategoriChart.render();
 </script>
 @endif
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const options = {
+            chart: {
+                type: 'bar',
+                height: 400,
+                stacked: true,
+                toolbar: {
+                    show: false
+                }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    barHeight: '20%',
+                    distributed: false,
+                    borderRadius: 4
+                }
+            },
+            stroke: {
+                width: 1,
+                colors: ['#fff']
+            },
+            series: {!! json_encode($bahayaSeries) !!},
+            xaxis: {
+                categories: {!! json_encode($bahayaDivisions) !!}
+            },
+            colors: ['#F44336', '#FFC107', '#4CAF50'], // open, in progress, closed
+            tooltip: {
+                y: {
+                    formatter: val => val + " laporan"
+                }
+            },
+            legend: {
+                position: 'top',
+                horizontalAlign: 'right'
+            },
+            dataLabels: {
+                enabled: true
+            },
+            yaxis: {
+                reversed: false
+            }
+        };
+
+        const chart = new ApexCharts(document.querySelector("#chartBahayaStatusDivisi"), options);
+        chart.render();
+    });
+</script>
