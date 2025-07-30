@@ -8,6 +8,7 @@ use App\Models\Master\Divisions;
 use App\Models\Master\Locations;
 use App\Models\Master\Observation;
 use App\Models\Master\Hazard;
+use App\Models\Master\KategoriBahaya;
 use App\Models\Report\ReportsHistories;
 use App\Models\User;
 
@@ -30,6 +31,7 @@ class Reports extends Model
         'division_id',
         'assigned_to',
         'foto',
+        'bahaya_id'
     ];
 
     // Relasi ke pelapor
@@ -54,6 +56,11 @@ class Reports extends Model
     public function hazardPotential()
     {
         return $this->belongsTo(Hazard::class);
+    }
+
+    public function Bahaya()
+    {
+        return $this->belongsTo(KategoriBahaya::class);
     }
 
     // Relasi ke divisi

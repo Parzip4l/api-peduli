@@ -54,6 +54,15 @@
                             </select>
                         </div>
                         <div class="col-md-12 mb-2">
+                            <label for="" class="form-label">Potensi Bahaya</label>
+                            <select class="form-control" id="choices-single-groups" data-choices data-choices-groups data-placeholder="Select Item" name="bahaya_id">
+                                <option value="">-- Pilih Jenis --</option>
+                                @foreach ($bahaya as $bahaya)
+                                    <option value="{{$bahaya->id}}">{{$bahaya->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-12 mb-2">
                             <label for="" class="form-label">Lokasi</label>
                             <select class="form-control" id="choices-single-groups" data-choices data-choices-groups data-placeholder="Select Item" name="location_id">
                                 <option value="">-- Pilih Lokasi --</option>

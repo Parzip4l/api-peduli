@@ -53,6 +53,7 @@ Route::group(['prefix' => '/', 'middleware' => 'auth'], function () {
         Route::post('/user/pic-update', [App\Http\Controllers\Master\PicController::class, 'updatePIC'])->name('pic.dataupdate');
     Route::resource('hazard', App\Http\Controllers\Master\HazardController::class);
     Route::resource('observation', App\Http\Controllers\Master\ObservationController::class);
+    Route::resource('bahaya', App\Http\Controllers\Master\KategoriBahaya::class);
 
 
     // Laporan

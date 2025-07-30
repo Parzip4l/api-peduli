@@ -24,6 +24,7 @@ use App\Models\Master\Employee;
 use App\Models\Master\Observation;
 use App\Models\Master\Hazard;
 use App\Models\Master\Divisions;
+use App\Models\Master\KategoriBahaya;
 use App\Models\Master\Notification as NotificationModel;
 
 class ReportController extends Controller
@@ -82,8 +83,9 @@ class ReportController extends Controller
         $pengamatan = Observation::all();
         $lokasi = Locations::all();
         $hazard = Hazard::all();
+        $bahaya = KategoriBahaya::all();
         
-        return view('report.create',compact('lokasi','pengamatan','hazard'));
+        return view('report.create',compact('lokasi','pengamatan','hazard','bahaya'));
     }
 
     public function store(Request $request)
