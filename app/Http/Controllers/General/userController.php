@@ -9,6 +9,7 @@ use App\Models\Setting\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class userController extends Controller
 {
@@ -30,7 +31,14 @@ class userController extends Controller
 
     public function create()
     {
-        $role = Role::all();
+        $user = Auth::user();
+
+        // Jika admin, tampilkan dashboard admin
+        if (strtolower($user->role) === 'admin') {
+           $role = Role::all();
+        }else {
+            $role = Role::where('name', 'pelapor')->get();
+        }
         return view('general.user.create',compact('role')); 
     }
 

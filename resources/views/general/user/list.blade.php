@@ -20,6 +20,7 @@
                         <h4 class="card-title">
                             List User Active
                         </h4>
+                        <a href="{{route('user.create')}}" class="btn btn-outline-primary">Tambah User</a>
                     </div>
                 </div>
                 <!-- end card body -->
@@ -69,11 +70,7 @@
                                 <td>
                                     <div class="d-flex gap-2">
                                         <a href="#!" class="btn btn-soft-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ModalUserUpdate{{ $data->id }}"><iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon></a>
-                                        <form action="{{ route('user.destroy', $data->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus user ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Hapus</button>
-                                        </form>
+                                        
                                     </div>
                                 </td>
                             </tr>
