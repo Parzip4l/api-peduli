@@ -141,6 +141,8 @@ class ReportController extends Controller
                 'tanggal_laporan' => now(),
             ]);
 
+            $hashid = hashid_encode($report->id);
+
             ReportsHistories::create([
                 'report_id' => $report->id,
                 'user_id' => Auth::id(),
@@ -148,6 +150,17 @@ class ReportController extends Controller
                 'catatan' => 'Laporan dibuat oleh ' . Auth::user()->name,
                 'tanggal' => now(),
             ]);
+
+            $qsheUsers = User::where('role', 'qshe')->get();
+
+            foreach ($qsheUsers as $qsheUser) {
+                NotificationModel::create([
+                    'user_id' => $qsheUser->id,
+                    'title' => 'Laporan Baru Dibuat',
+                    'message' => 'Laporan "' . $report->judul . '" telah dibuat dan menunggu pemeriksaan.',
+                    'url' => route('laporan.show', $hashid),
+                ]);
+            }
 
             try {
                 Auth::user()->notify(new LaporanTerkirimNotification($nomorSurat));
