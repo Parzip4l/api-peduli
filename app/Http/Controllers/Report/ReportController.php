@@ -134,6 +134,7 @@ class ReportController extends Controller
                 'keterangan' => $request->keterangan,
                 'hazard_potential_id' => $request->hazard_potential_id,
                 'perlu_tindak_lanjut' => $request->perlu_tindak_lanjut,
+                'bahaya_id' => $request->perlu_tindak_lanjut,
                 'nomor_laporan' => $nomorSurat,
                 'kode_perusahaan' => 'LRTJ',
                 'foto' => $fileName,
