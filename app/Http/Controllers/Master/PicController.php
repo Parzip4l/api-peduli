@@ -29,7 +29,7 @@ class PicController extends Controller
                             ->orWhere('email', 'like', '%' . $search . '%');
                         });
                     })
-                    ->paginate(10);
+                    ->paginate(50);
 
         if ($request->ajax()) {
             return view('master.pic.index', compact('user'))->render();
