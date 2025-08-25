@@ -73,6 +73,13 @@
                             </form>
                         </div>
                     </div>
+                    @if ($user->role === 'qshe' || $user->role === 'admin')
+                        <div class="mb-3">
+                            <button type="button" id="send-reminder-btn" class="btn btn-sm btn-warning">
+                                <i class="bx bx-bell me-1"></i> Kirim Reminder
+                            </button>
+                        </div>
+                    @endif
                 </div>
                 <!-- end card body -->
                  
@@ -82,6 +89,9 @@
                     <table class="table mb-0">
                         <thead class="bg-light bg-opacity-50">
                             <tr>
+                                @if ($user->role === 'qshe' || $user->role === 'admin')
+                                    <th><input type="checkbox" id="select_all"></th>
+                                @endif
                                 <th class="ps-3">Nomor</th>
                                 <th>Title</th>
                                 <th>Tanggal</th>
@@ -93,6 +103,9 @@
                         <tbody id="user-table-body">
                             @foreach($reports as $report)
                             <tr>
+                                @if ($user->role === 'qshe' || $user->role === 'admin')
+                                    <td><input type="checkbox" name="report_ids[]" value="{{ $report->id }}" class="report-checkbox"></td>
+                                @endif
                                 <td class="ps-3">{{$report->nomor_laporan}}</td>
                                 <td>{{$report->judul}}</td>  
                                 <td>{{date('d-m-Y', strtotime($report->tanggal_laporan))}}</td>  
@@ -492,5 +505,51 @@
 
         reader.readAsDataURL(file);
     }
+</script>
+<script>
+    $(document).ready(function() {
+    $('#send-reminder-btn').on('click', function() {
+        let selected = [];
+        $('.report-checkbox:checked').each(function() {
+            selected.push($(this).val());
+        });
+
+        if (selected.length === 0) {
+            Swal.fire('Oops!', 'Pilih minimal satu laporan untuk dikirim reminder.', 'warning');
+            return;
+        }
+
+        Swal.fire({
+            title: 'Kirim Reminder?',
+            text: "Reminder akan dikirim ke divisi terkait untuk laporan yang dipilih.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, kirim!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "{{ route('laporan.reminder') }}",
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        report_ids: selected
+                    },
+                    success: function(response) {
+                        Swal.fire('Berhasil!', response.message, 'success');
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Gagal!', xhr.responseJSON?.error || 'Terjadi kesalahan', 'error');
+                    }
+                });
+            }
+        });
+    });
+
+    // Select all checkbox
+    $('#select_all').on('change', function() {
+        $('.report-checkbox').prop('checked', this.checked);
+    });
+});
 </script>
 @endsection

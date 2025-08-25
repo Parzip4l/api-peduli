@@ -542,4 +542,56 @@ class ReportController extends Controller
         }
     }
 
+    public function sendReminder(Request $request)
+    {
+        try {
+            $reportIds = $request->input('report_ids');
+
+            $reports = Reports::whereIn('id', $reportIds)
+                ->where('status', 'assigned_to_division')
+                ->get();
+
+            if ($reports->isEmpty()) {
+                return response()->json(['message' => 'Tidak ada laporan yang bisa di-reminder'], 404);
+            }
+
+            foreach ($reports as $report) {
+                // Ambil user yang menjadi PIC di divisi laporan
+                $picUsers = User::where('division_id', $report->division_id)
+                    ->where('is_pic', 1)
+                    ->get();
+
+                if ($picUsers->isEmpty()) {
+                    Log::warning("Tidak ada PIC untuk divisi {$report->division_id} pada laporan {$report->id}");
+                    continue;
+                }
+
+                foreach ($picUsers as $user) {
+                    // Simpan notifikasi ke DB
+                    NotificationModel::create([
+                        'user_id' => $user->id,
+                        'title'   => 'Reminder Tindak Lanjut Laporan',
+                        'message' => 'Laporan "' . $report->judul . '" masih belum ditindaklanjuti.',
+                        'url'     => route('laporan.show', hashid_encode($report->id)),
+                    ]);
+
+                    // Kirim email
+                    try {
+                        $user->notify(new \App\Notifications\ReminderLaporanNotification($report));
+                        Log::info("Reminder berhasil dikirim ke email: {$user->email} untuk laporan: {$report->judul}");
+                    } catch (\Exception $e) {
+                        Log::error("Gagal kirim email reminder ke {$user->email}: " . $e->getMessage());
+                    }
+                }
+            }
+
+            return response()->json(['message' => 'Reminder berhasil dikirim!']);
+
+        } catch (\Exception $e) {
+            Log::error("Error saat kirim reminder: " . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+
 }

@@ -72,5 +72,6 @@ Route::group(['prefix' => '/', 'middleware' => 'auth'], function () {
     Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsRead']);
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
     Route::delete('/notifications/clear', [NotificationController::class, 'clearAll']);
+    Route::post('/laporan/reminder', [App\Http\Controllers\Report\ReportController::class, 'sendReminder'])->name('laporan.reminder');
 
 });
