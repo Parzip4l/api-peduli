@@ -21,14 +21,13 @@
                     @csrf
                     <div class="row">
                         <div class="col-md-12 mb-2">
-                            <label for="foto" class="form-label">Ambil Foto</label>
+                            <label for="foto" class="form-label">Ambil / Pilih Foto</label>
                             <input 
                                 type="file" 
                                 class="form-control" 
                                 name="foto" 
                                 id="fotoInput" 
                                 accept="image/*" 
-                                capture="environment"
                                 onchange="compressAndPreviewFoto(event)">
                             <input type="hidden" name="foto_base64" id="fotoBase64">
                         </div>
