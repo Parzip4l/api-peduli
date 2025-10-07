@@ -161,7 +161,7 @@
                     preview.style.display = 'block';
 
                     // Simpan ke input hidden base64
-                    document.getElementById('fotoBase64').value = compressedDataUrl;
+                    document.getElementById('fotoBase64').value = encodeURIComponent(compressedDataUrl);
                 };
 
                 img.src = e.target.result;
@@ -169,5 +169,5 @@
 
             reader.readAsDataURL(file);
         }
-        </script>
+    </script>
 @endsection

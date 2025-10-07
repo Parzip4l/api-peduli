@@ -118,11 +118,22 @@ class ReportController extends Controller
             $nomorSurat = "LRTJ/{$kodeLokasi}/{$tanggal}/{$random}";
 
             if ($request->has('foto_base64')) {
-                $fotoData = $request->foto_base64;
-                $fotoData = str_replace('data:image/jpeg;base64,', '', $fotoData);
+            // Decode dulu hasil encodeURIComponent()
+                $fotoData = urldecode($request->foto_base64);
+
+                // Hilangkan prefix base64
+                $fotoData = preg_replace('/^data:image\/\w+;base64,/', '', $fotoData);
                 $fotoData = str_replace(' ', '+', $fotoData);
+
+                // Decode base64 → binary
+                $imageData = base64_decode($fotoData);
+
+                if ($imageData === false) {
+                    return response()->json(['error' => 'Gagal decode base64'], 400);
+                }
+
                 $fileName = 'foto_' . time() . '.jpg';
-                Storage::put('public/laporan_foto/' . $fileName, base64_decode($fotoData));
+                Storage::disk('public')->put('laporan_foto/' . $fileName, $imageData);
             }
 
             $report = Reports::create([
@@ -383,12 +394,24 @@ class ReportController extends Controller
         ]);
 
         if ($request->has('foto_base64')) {
-            $fotoData = $request->foto_base64;
-            $fotoData = str_replace('data:image/jpeg;base64,', '', $fotoData);
+        // Decode dulu hasil encodeURIComponent()
+            $fotoData = urldecode($request->foto_base64);
+
+            // Hilangkan prefix base64
+            $fotoData = preg_replace('/^data:image\/\w+;base64,/', '', $fotoData);
             $fotoData = str_replace(' ', '+', $fotoData);
+
+            // Decode base64 → binary
+            $imageData = base64_decode($fotoData);
+
+            if ($imageData === false) {
+                return response()->json(['error' => 'Gagal decode base64'], 400);
+            }
+
             $fileName = 'foto_' . time() . '.jpg';
-            Storage::put('public/laporan_foto/' . $fileName, base64_decode($fotoData));
+            Storage::disk('public')->put('laporan_foto/' . $fileName, $imageData);
         }
+
 
         if ($request->action === '1') {
             $report->update(['status' => 'under_review_by_qshe']);
