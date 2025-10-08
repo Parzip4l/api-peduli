@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\TestLdapController;
 use App\Http\Controllers\LdapLoginController;
 use App\Http\Controllers\Master\NotificationController;
+use App\Http\Controllers\Master\DepartmentController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -54,6 +55,8 @@ Route::group(['prefix' => '/', 'middleware' => 'auth'], function () {
     Route::resource('hazard', App\Http\Controllers\Master\HazardController::class);
     Route::resource('observation', App\Http\Controllers\Master\ObservationController::class);
     Route::resource('bahaya', App\Http\Controllers\Master\KategoriBahaya::class);
+    Route::resource('departments',DepartmentController::class);
+    Route::get('/departments/by-division/{division}', [DepartmentController::class, 'getByDivision'])->name('departments.byDivision');
 
 
     // Laporan

@@ -14,4 +14,9 @@ class Divisions extends Model
     protected $fillable = ['name'];
 
     public function reports() { return $this->hasMany(Reports::class); }
+
+    public function departments()
+    {
+        return $this->hasMany(Department::class, 'division_id');
+    }
 }

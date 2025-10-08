@@ -17,11 +17,38 @@ class PicController extends Controller
     /**
      * Display a listing of the resource.
      */
+    // public function index(Request $request)
+    // {
+    //     $search = $request->get('search');
+
+    //     $user = User::whereNotNull('division_id')
+    //                 ->where('is_pic', 1)
+    //                 ->when($search, function ($query, $search) {
+    //                     return $query->where(function ($q) use ($search) {
+    //                         $q->where('name', 'like', '%' . $search . '%')
+    //                         ->orWhere('email', 'like', '%' . $search . '%');
+    //                     });
+    //                 })
+    //                 ->paginate(50);
+        
+
+    //     if ($request->ajax()) {
+    //         return view('master.pic.index', compact('user'))->render();
+    //     }
+
+    //     $divisi = Divisions::all();
+    //     $allUser = User::where('role','pelapor')
+    //                 ->where('division_id', null)->where('is_pic', 0)->get();
+
+    //     return view('master.pic.index', compact('user','divisi','allUser'));
+    // }
+
     public function index(Request $request)
     {
+
         $search = $request->get('search');
 
-        $user = User::whereNotNull('division_id')
+        $user = User::with('division','department')->whereNotNull('division_id')
                     ->where('is_pic', 1)
                     ->when($search, function ($query, $search) {
                         return $query->where(function ($q) use ($search) {
@@ -29,16 +56,15 @@ class PicController extends Controller
                             ->orWhere('email', 'like', '%' . $search . '%');
                         });
                     })
-                    ->paginate(50);
-
-        if ($request->ajax()) {
-            return view('master.pic.index', compact('user'))->render();
-        }
+                    ->paginate(10);
 
         $divisi = Divisions::all();
         $allUser = User::where('role','pelapor')
                     ->where('division_id', null)->where('is_pic', 0)->get();
-
+        if ($request->ajax()) {
+            return view('master.pic.index', compact('user','divisi','allUser'))->render();
+        }
+        
         return view('master.pic.index', compact('user','divisi','allUser'));
     }
 
@@ -53,6 +79,7 @@ class PicController extends Controller
             $user = User::findOrFail($request->name);
 
             $user->division_id = $request->divisi;
+            $user->departement = $request->department_id;
             $user->is_pic = 1;
             $user->role = 'pic';
             $user->save();
@@ -111,6 +138,7 @@ class PicController extends Controller
             $user = User::findOrFail($request->name);
 
             $user->division_id = $request->divisi;
+            $user->departement = $request->department_id;
             $user->is_pic = 1;
             $user->role = 'pic';
             $user->save();

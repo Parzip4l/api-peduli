@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 use App\Models\Master\Divisions;
+use App\Models\Master\Department;
 
 class User extends Authenticatable
 {
@@ -25,7 +26,8 @@ class User extends Authenticatable
         'username',
         'remember_token',
         'role_id',
-        'phone'
+        'phone',
+        'departement'
     ];
 
     /**
@@ -59,5 +61,10 @@ class User extends Authenticatable
     public function division()
     {
         return $this->belongsTo(Divisions::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'departement');
     }
 }

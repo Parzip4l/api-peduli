@@ -1,4 +1,4 @@
-@extends('layouts.vertical', ['title' => 'Data PIC'])
+@extends('layouts.vertical', ['title' => 'Data Department'])
 @section('css')
 @vite(['node_modules/choices.js/public/assets/styles/choices.min.css'])
 @endsection
@@ -20,11 +20,11 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
                         <h4 class="card-title">
-                            Data PIC
+                            Data Department
                         </h4>
 
                         <a href="#" class="btn btn-sm btn-soft-primary" data-bs-toggle="modal" data-bs-target="#ModalDivisi">
-                            <i class="bx bx-plus me-1"></i>Buat PIC
+                            <i class="bx bx-plus me-1"></i>Buat Department
                         </a>
                     </div>
                 </div>
@@ -42,9 +42,8 @@
                         <thead class="bg-light bg-opacity-50">
                             <tr>
                                 <th class="ps-3">#</th>
-                                <th>Nama User</th>
-                                <th>Nama Divisi</th>
                                 <th>Nama Department</th>
+                                <th>Nama Divisi</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -52,15 +51,14 @@
                             @php 
                                 $no = 1;
                             @endphp
-                            @foreach($user as $data)
+                            @foreach($departments as $data)
                             <tr>
                                 <td class="ps-3">{{$no++}}</td>
                                 <td>{{$data->name}}</td>
                                 <td>{{$data->division->name}}</td>
-                                <td>{{ $data->department?->name ?? '-' }}</td>
                                 <td>
                                     <div class="d-flex gap-2">
-                                        <a href="#" class="btn btn-soft-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ModalPIC{{ $data->id }}">
+                                        <a href="#" class="btn btn-soft-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ModalDivisiUpdate{{ $data->id }}">
                                             <iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon>
                                         </a>
                                         <a href="#!" class="btn btn-soft-danger btn-sm" onclick="confirmDelete({{ $data->id }})">
@@ -76,10 +74,10 @@
                     <tfoot>
                         <div class="d-flex justify-content-between mx-3 mt-2 mb-2">
                             <div>
-                                Showing {{ $user->firstItem() }} to {{ $user->lastItem() }} of {{ $user->total() }} entries
+                                Showing {{ $departments->firstItem() }} to {{ $departments->lastItem() }} of {{ $departments->total() }} entries
                             </div>
                             <div class="">
-                                {{ $user->links('pagination::bootstrap-4') }}  <!-- Pagination links -->
+                                {{ $departments->links('pagination::bootstrap-4') }}  <!-- Pagination links -->
                             </div>
                         </div>
                     </tfoot>
@@ -88,41 +86,33 @@
             </div>
 
             <!-- Modal Tambah Data -->
-            <div class="modal fade" id="ModalPIC" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal fade" id="ModalDivisi" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel">Tambah Data Lokasi</h5>
+                            <h5 class="modal-title" id="staticBackdropLabel">Tambah Data Divisi</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form action="{{ route('pic.dataupdate') }}" method="POST" id="ModalPIC">
+                            <form action="{{ route('departments.store')}}" method="POST" id="ModalDivisi">
                                 @csrf
+
                                 <div class="mb-2">
-                                    <label for="name" class="form-label">Nama Karyawan</label>
-                                    <select name="name" id="name" class="form-control" data-choices data-choices-groups required>
-                                        <option value="">Pilih Nama</option>
-                                        @foreach($allUser as $userData)
-                                            <option value="{{ $userData->id }}">{{ $userData->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <label for="" class="form-label">Nama Department</label>
+                                    <input type="text" name="name" class="form-control" required>
                                 </div>
 
                                 <div class="mb-2">
-                                    <label for="divisi" class="form-label">Divisi</label>
-                                    <select name="divisi" id="divisi" class="form-control division-select" data-choices required>
-                                        <option value="">Pilih Divisi</option>
-                                        @foreach($divisi as $div)
-                                            <option value="{{ $div->id }}">{{ $div->name }}</option>
-                                        @endforeach
-                                    </select>
+                                    <label for="" class="form-label">Code Department</label>
+                                    <input type="text" name="code" class="form-control">
                                 </div>
 
-                                <!-- Optional: Tambah dropdown department dinamis -->
-                                <div class="mb-2 d-none" id="departmentWrapperCreate">
-                                    <label for="department_id" class="form-label">Departemen</label>
-                                    <select name="department_id" id="departmentSelectCreate" class="form-control">
-                                        <option value="">-- Pilih Departemen --</option>
+                                <div class="mb-2">
+                                    <label for="" class="form-label">Nama Divisi</label>
+                                    <select name="division_id" id="" class="form-control" required>
+                                        @foreach ($divisi as $div)
+                                            <option value="{{$div->id}}">{{$div->name}}</option>
+                                        @endforeach
                                     </select>
                                 </div>
 
@@ -132,56 +122,44 @@
                                 </div>
                             </form>
 
-
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Modal Edit Data -->
-            @foreach($user as $data)
-            <div class="modal fade" id="ModalPIC{{$data->id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            @foreach($departments as $data)
+            <div class="modal fade" id="ModalDivisiUpdate{{$data->id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel">Update Data PIC</h5>
+                            <h5 class="modal-title" id="staticBackdropLabel">Edit Data Department</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form action="{{ route('pic.update', $data->id) }}" method="POST" id="ModalPIC{{ $data->id }}">
+                            <form action="{{ route('departments.update', $data->id)}}" method="POST" id="ModalDivisi">
                                 @csrf
                                 @method('PUT')
-
                                 <div class="mb-2">
-                                    <label for="" class="form-label">Nama Karyawan</label>
-                                    <input type="text" name="name_display" class="form-control" value="{{ $data->name }}" readonly>
-                                    <input type="hidden" name="name" value="{{ $data->id }}">
+                                    <label for="" class="form-label">Nama Department</label>
+                                    <input type="text" name="name" class="form-control" value="{{$data->name}}">
                                 </div>
 
                                 <div class="mb-2">
-                                    <label for="" class="form-label">Divisi</label>
-                                    <select name="divisi" class="form-control division-select" data-target="{{ $data->id }}" data-choices required>
-                                        <option value="">Pilih Divisi</option>
-                                        @foreach($divisi as $div)
-                                            <option value="{{ $div->id }}" {{ $data->division_id == $div->id ? 'selected' : '' }}>
+                                    <label for="" class="form-label">Code Department</label>
+                                    <input type="text" name="code" class="form-control" value="{{$data->code}}">
+                                </div>
+
+                                <div class="mb-2">
+                                    <label for="" class="form-label">Nama Divisi</label>
+                                    <select name="division_id" id="division_id" class="form-control" required data-choices data-choices-groups>
+                                        <option value="">-- Pilih Divisi --</option>
+                                        @foreach ($divisi as $div)
+                                            <option value="{{ $div->id }}" 
+                                                {{ (old('division_id', $data->division_id ?? '') == $div->id) ? 'selected' : '' }}>
                                                 {{ $div->name }}
                                             </option>
                                         @endforeach
-                                    </select>
-                                </div>
-
-                                <!-- Optional: Tambah dropdown department dinamis -->
-                                <div class="mb-2 {{ $data->department_id ? '' : 'd-none' }}" id="departmentWrapper{{ $data->id }}">
-                                    <label for="department_id" class="form-label">Departemen</label>
-                                    <select name="department_id" id="departmentSelect{{ $data->id }}" class="form-control">
-                                        <option value="">-- Pilih Departemen --</option>
-                                        @if(isset($departments))
-                                            @foreach($departments as $dep)
-                                                <option value="{{ $dep->id }}" {{ $data->department_id == $dep->id ? 'selected' : '' }}>
-                                                    {{ $dep->name }}
-                                                </option>
-                                            @endforeach
-                                        @endif
                                     </select>
                                 </div>
 
@@ -190,7 +168,6 @@
                                     <button type="submit" class="btn btn-danger">Update Data</button>
                                 </div>
                             </form>
-
 
                         </div>
                     </div>
@@ -214,7 +191,7 @@
                 var page = $('.pagination .active a').text() || 1;  // Get the current page, default to 1
 
                 $.ajax({
-                    url: "{{ route('pic.index') }}",  // Route for user list
+                    url: "{{ route('departments.index') }}",  // Route for user list
                     method: 'GET',
                     data: { 
                         search: search,  // Send the search query
@@ -235,7 +212,7 @@
                 var search = $('#search-input').val();  // Get the search input value
 
                 $.ajax({
-                    url: "{{ route('pic.index') }}",  // Route for user list
+                    url: "{{ route('departments.index') }}",  // Route for user list
                     method: 'GET',
                     data: { 
                         search: search,  // Send the search query
@@ -250,42 +227,55 @@
         });
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.division-select').forEach(select => {
-                select.addEventListener('change', async function () {
-                    const divisionId = this.value;
-                    const targetId = this.getAttribute('data-target') || 'Create';
-                    const wrapper = document.getElementById(`departmentWrapper${targetId}`);
-                    const dropdown = document.getElementById(`departmentSelect${targetId}`);
-
-                    dropdown.innerHTML = '<option value="">-- Pilih Departemen --</option>';
-
-                    if (!divisionId) {
-                        wrapper.classList.add('d-none');
-                        return;
-                    }
-
-                    try {
-                        const res = await fetch(`/departments/by-division/${divisionId}`);
-                        const data = await res.json();
-
-                        if (data.length > 0) {
-                            data.forEach(dep => {
-                                const opt = document.createElement('option');
-                                opt.value = dep.id;
-                                opt.textContent = dep.name;
-                                dropdown.appendChild(opt);
+        function confirmDelete(menuId) {
+            // Tampilkan SweetAlert konfirmasi
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'You won\'t be able to revert this!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kirim permintaan AJAX untuk menghapus menu
+                    fetch('/departments/' + menuId, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire(
+                                'Deleted!',
+                                'Data has been deleted.',
+                                'success'
+                            ).then(() => {
+                                location.reload(); // Muat ulang halaman untuk melihat perubahan
                             });
-                            wrapper.classList.remove('d-none');
                         } else {
-                            wrapper.classList.add('d-none');
+                            Swal.fire(
+                                'Error!',
+                                data.message || 'Failed to delete data. Please try again.', // Menampilkan pesan error dari server
+                                'error'
+                            );
                         }
-                    } catch (err) {
-                        console.error(err);
-                    }
-                });
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire(
+                            'Error!',
+                            error.message || 'An error occurred. Please try again.', // Menampilkan pesan error dari exception
+                            'error'
+                        );
+                    });
+                }
             });
-        });
+        }
     </script>
 
 @endsection

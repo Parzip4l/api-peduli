@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('reports', function (Blueprint $table) {
-            $table->foreignId('bahaya_id')->constrained('bahaya');
+        Schema::table('report_assignments', function (Blueprint $table) {
+            $table->string('department_id')
+                  ->after('division_id')->nullable();
         });
     }
 
@@ -21,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('laporan', function (Blueprint $table) {
+        Schema::table('report_assignments', function (Blueprint $table) {
             //
         });
     }

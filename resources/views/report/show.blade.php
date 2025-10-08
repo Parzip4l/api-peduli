@@ -1,5 +1,7 @@
 @extends('layouts.vertical', ['title' => 'Details Data Laporan'])
-
+@section('css')
+@vite(['node_modules/choices.js/public/assets/styles/choices.min.css'])
+@endsection
 @section('content')
 @if (session('success'))
     <div class="alert alert-success">
@@ -169,11 +171,20 @@ $user = auth()->user();
                                 <div class="div-approval-fields d-none" id="approvalFields{{ hashid_encode($data->id) }}">
                                     <div class="mb-2">
                                         <label for="" class="form-label">Divisi</label>
-                                        <select name="division_id" class="form-control">
+                                        <select name="division_id" class="form-control division-select" 
+                                                data-target="{{ hashid_encode($data->id) }}" data-choices data-choices-groups>
                                             <option value="">-- Pilih Divisi --</option>
                                             @foreach ($divisi as $div)
                                                 <option value="{{ $div->id }}">{{ $div->name }}</option>
                                             @endforeach
+                                        </select>
+                                    </div>
+
+                                    <!-- Dropdown Departemen dinamis -->
+                                    <div class="mb-2 d-none" id="departmentWrapper{{ hashid_encode($data->id) }}">
+                                        <label for="" class="form-label">Departemen</label>
+                                        <select name="department_id" class="form-control" id="departmentSelect{{ hashid_encode($data->id) }}" data-choices data-choices-groups>
+                                            <option value="">-- Pilih Departemen --</option>
                                         </select>
                                     </div>
                                 </div>
@@ -465,5 +476,61 @@ $user = auth()->user();
                 });
             });
         });
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // Event untuk ubah select divisi
+        document.querySelectorAll('.division-select').forEach(select => {
+            select.addEventListener('change', async function () {
+                const divisionId = this.value;
+                const targetId = this.getAttribute('data-target');
+                const departmentWrapper = document.getElementById(`departmentWrapper${targetId}`);
+                const departmentSelect = document.getElementById(`departmentSelect${targetId}`);
+
+                // Kosongkan dropdown departemen
+                departmentSelect.innerHTML = '<option value="">-- Pilih Departemen --</option>';
+
+                if (!divisionId) {
+                    departmentWrapper.classList.add('d-none');
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`/departments/by-division/${divisionId}`);
+                    const data = await res.json();
+
+                    if (data.length > 0) {
+                        data.forEach(dep => {
+                            const option = document.createElement('option');
+                            option.value = dep.id;
+                            option.textContent = dep.name;
+                            departmentSelect.appendChild(option);
+                        });
+                        departmentWrapper.classList.remove('d-none');
+                    } else {
+                        // Jika tidak ada department, sembunyikan dropdown
+                        departmentWrapper.classList.add('d-none');
+                    }
+                } catch (err) {
+                    console.error('Gagal mengambil data department:', err);
+                }
+            });
+        });
+
+        // Event untuk select approve/reject
+        document.querySelectorAll('.action-select').forEach(select => {
+            select.addEventListener('change', function () {
+                const targetId = this.getAttribute('data-target');
+                const approvalFields = document.getElementById(`approvalFields${targetId}`);
+                if (this.value === 'approve') {
+                    approvalFields.classList.remove('d-none');
+                } else {
+                    approvalFields.classList.add('d-none');
+                }
+            });
+        });
+
+    });
     </script>
 @endsection
