@@ -109,7 +109,7 @@
 
                                 <div class="mb-2">
                                     <label for="" class="form-label">Nama Divisi</label>
-                                    <select name="division_id" id="" class="form-control" required>
+                                    <select name="division_id" id="" class="form-control" required data-choices data-choices-groups>
                                         @foreach ($divisi as $div)
                                             <option value="{{$div->id}}">{{$div->name}}</option>
                                         @endforeach
