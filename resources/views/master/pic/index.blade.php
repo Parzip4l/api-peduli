@@ -23,7 +23,7 @@
                             Data PIC
                         </h4>
 
-                        <a href="#" class="btn btn-sm btn-soft-primary" data-bs-toggle="modal" data-bs-target="#ModalDivisi">
+                        <a href="#" class="btn btn-sm btn-soft-primary" data-bs-toggle="modal" data-bs-target="#ModalPIC">
                             <i class="bx bx-plus me-1"></i>Buat PIC
                         </a>
                     </div>
