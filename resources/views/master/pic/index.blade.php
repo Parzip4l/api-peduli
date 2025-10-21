@@ -60,10 +60,13 @@
                                 <td>{{ $data->department?->name ?? '-' }}</td>
                                 <td>
                                     <div class="d-flex gap-2">
-                                        <a href="#" class="btn btn-soft-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ModalPIC{{ $data->id }}">
+                                        {{-- TOMBOL EDIT --}}
+                                        <a href="#" class="btn btn-soft-primary btn-sm btn-edit" data-bs-toggle="modal" data-bs-target="#ModalPIC{{ $data->id }}">
                                             <iconify-icon icon="solar:pen-2-broken" class="align-middle fs-18"></iconify-icon>
                                         </a>
-                                        <a href="#!" class="btn btn-soft-danger btn-sm" onclick="confirmDelete({{ $data->id }})">
+                                        
+                                        {{-- TOMBOL DELETE --}}
+                                        <a href="#!" class="btn btn-soft-danger btn-sm btn-delete" data-id="{{ $data->id }}">
                                             <iconify-icon icon="solar:trash-bin-minimalistic-2-broken" class="align-middle fs-18"></iconify-icon>
                                         </a>
                                     </div>
@@ -207,45 +210,116 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        $(document).ready(function() {
-        // Trigger an AJAX request on keyup event
-            $('#search-input').on('keyup', function() {
-                var search = $(this).val();  // Get the search input value
-                var page = $('.pagination .active a').text() || 1;  // Get the current page, default to 1
+        // Fungsi untuk konfirmasi hapus
+        function confirmDelete(userId) {
+            Swal.fire({
+                title: 'Anda yakin?',
+                text: "Data ini tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Jika dikonfirmasi, buat form dan submit untuk menghapus data
+                    let form = document.createElement('form');
+                    form.action = `/pic/${userId}`; // Sesuaikan dengan route delete Anda
+                    form.method = 'POST';
+                    form.innerHTML = `
+                        @csrf
+                        @method('DELETE')
+                    `;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            })
+        }
 
+        $(document).ready(function() {
+            // Fungsi untuk melakukan pencarian dan paginasi via AJAX
+            function fetchData(page, search) {
                 $.ajax({
-                    url: "{{ route('pic.index') }}",  // Route for user list
+                    url: "{{ route('pic.index') }}",
                     method: 'GET',
-                    data: { 
-                        search: search,  // Send the search query
-                        page: page       // Send the current page number
+                    data: {
+                        search: search,
+                        page: page
                     },
                     success: function(response) {
-                        $('#user-table-body').html($(response).find('#user-table-body').html());  // Replace table body with filtered data
-                        $('.pagination').html($(response).find('.pagination').html());  // Replace pagination
+                        // Ganti konten tabel dan paginasi
+                        $('#user-table-body').html($(response).find('#user-table-body').html());
+                        $('tfoot').html($(response).find('tfoot').html()); // Perbaiki ini agar info showing juga terupdate
+                    },
+                    error: function(xhr) {
+                        console.error("Terjadi kesalahan:", xhr.responseText);
                     }
                 });
+            }
+
+            // --- EVENT LISTENER DENGAN DELEGASI ---
+
+            // 1. Event listener untuk input pencarian
+            $('#search-input').on('keyup', function() {
+                var search = $(this).val();
+                fetchData(1, search); // Selalu kembali ke halaman 1 saat mencari
             });
 
-            // Handle pagination click
-            $(document).on('click', '.pagination a', function(event) {
+            // 2. Event listener untuk klik paginasi (menggunakan delegasi)
+            $(document).on('click', 'tfoot .pagination a', function(event) {
                 event.preventDefault();
-                
-                var page = $(this).attr('href').split('page=')[1];  // Extract the page number from the link
-                var search = $('#search-input').val();  // Get the search input value
+                var page = $(this).attr('href').split('page=')[1];
+                var search = $('#search-input').val();
+                fetchData(page, search);
+            });
 
-                $.ajax({
-                    url: "{{ route('pic.index') }}",  // Route for user list
-                    method: 'GET',
-                    data: { 
-                        search: search,  // Send the search query
-                        page: page       // Send the page number
-                    },
-                    success: function(response) {
-                        $('#user-table-body').html($(response).find('#user-table-body').html()); 
-                        $('.pagination').html($(response).find('.pagination').html()); 
+            // 3. Event listener untuk tombol delete (menggunakan delegasi)
+            $(document).on('click', '.btn-delete', function() {
+                var userId = $(this).data('id'); // Ambil ID dari data-id
+                confirmDelete(userId);
+            });
+
+            // 4. Event listener untuk dropdown divisi (menggunakan delegasi)
+            // Ini akan bekerja untuk modal 'Tambah' dan 'Edit' yang dimuat kapan pun
+            $(document).on('change', '.division-select', async function () {
+                const divisionId = this.value;
+                // Menentukan apakah ini modal create atau edit
+                const isCreateModal = this.closest('#ModalPIC') !== null;
+                const targetId = isCreateModal ? 'Create' : this.getAttribute('data-target');
+
+                const wrapper = document.getElementById(`departmentWrapper${targetId}`);
+                const dropdown = document.getElementById(`departmentSelect${targetId}`);
+
+                if (!dropdown || !wrapper) return; // Guard clause
+
+                dropdown.innerHTML = '<option value="">-- Pilih Departemen --</option>';
+
+                if (!divisionId) {
+                    wrapper.classList.add('d-none');
+                    return;
+                }
+
+                try {
+                    const res = await fetch(`/departments/by-division/${divisionId}`);
+                    if (!res.ok) throw new Error('Network response was not ok');
+                    const data = await res.json();
+
+                    if (data.length > 0) {
+                        data.forEach(dep => {
+                            const opt = document.createElement('option');
+                            opt.value = dep.id;
+                            opt.textContent = dep.name;
+                            dropdown.appendChild(opt);
+                        });
+                        wrapper.classList.remove('d-none');
+                    } else {
+                        wrapper.classList.add('d-none');
                     }
-                });
+                } catch (err) {
+                    console.error("Gagal mengambil data departemen:", err);
+                    wrapper.classList.add('d-none');
+                }
             });
         });
     </script>
