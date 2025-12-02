@@ -14,10 +14,11 @@ services:
       - ./:/var/www
     networks:
       - laravel-network
-    # Environment variables bisa diambil dari file .env kamu
+    # Tambahkan bagian ini agar port 9000 bisa diakses oleh Host Nginx
+    ports:
+      - "9000:9000"
     env_file: .env
 
-  # Service Web Server (Nginx) - Dibutuhkan untuk akses browser
   nginx:
     image: nginx:alpine
     container_name: laravel-nginx
